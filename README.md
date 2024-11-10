@@ -1,5 +1,7 @@
 # Hotcart
 
+[![codecov](https://codecov.io/github/tmpvar/hotcart/graph/badge.svg?token=D140ZH0YD3)](https://codecov.io/github/tmpvar/hotcart)
+
 hot-reloading rapid prototyping platform for c++
 
 
