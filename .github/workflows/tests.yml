@@ -25,15 +25,14 @@ jobs:
         build-gcov/hotcart-tests
     - name: coverage
       run: |
-        mkdir -p build-gcov/coverage
-        cd build-gcov/coverage
-        lcov --capture --directory . --output-file coverage.info
+        lcov --capture --directory . --output-file build-gcov/coverage.info
+        cat build-gcov/coverage.info
     # lcov ../CMakeFiles/hotcart-tests.dir/src/tests.cpp.gcda
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
-        verbose: true
+        verbose: false
         directory: build-gcov/coverage
         fail_on_error: true
       env:

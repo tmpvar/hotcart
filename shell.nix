@@ -13,7 +13,8 @@ with import <nixpkgs> {};
     xorg.libXext
     python3
     egl-wayland
-    libllvm
+    lcov
+    gcc
   ];
   buildInputs = with pkgs; [
     wayland
