@@ -35,6 +35,7 @@ jobs:
       with:
         verbose: true
         directory: build-gcov/coverage
+        fail_on_error: true
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
