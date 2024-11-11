@@ -7,16 +7,13 @@ cmake --build . --parallel --target hotcart-tests
 
 ./hotcart-tests
 
-lcov --capture --directory . --output-file coverage.info
+lcov --capture -q --directory CMakeFiles/hotcart-tests.dir --output-file coverage.info
+lcov -q --no-external -r coverage.info "/nix/store/*" --output-file coverage.info
+lcov -q --no-external -r coverage.info "/usr/include/*" --output-file coverage.info
+lcov -q --no-external -r coverage.info "*doctest*" --output-file coverage.info
 
-# mkdir -p coverage
-# pushd coverage > /dev/null
-#   llvm-cov gcov ../CMakeFiles/hotcart-tests.dir/src/tests.cpp.gcda > /dev/null
-# popd
+bash $DIR/print-coverage.sh coverage.info
 
-# LLVM_PROFILE_FILE=hotcart.profraw ./hotcart-tests
-# llvm-profdata merge -sparse hotcart.profraw -o hotcart.profdata
-# llvm-cov report hotcart-tests -instr-profile=hotcart.profdata --ignore-filename-regex=doctest
-
+echo "  html report: file://$(realpath coverage/index.html)"
 popd > /dev/null
 

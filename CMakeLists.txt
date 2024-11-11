@@ -4,8 +4,7 @@ project(sdl-imwindow)
 include(FetchContent)
 
 option(HOTCART_ENABLE_TESTS "Enable tests" OFF)
-option(HOTCART_TEST_COVERAGE_LLVM "Enable LLVM test coverage" OFF)
-option(HOTCART_TEST_COVERAGE_GCOV "Enable GCOV test coverage" OFF)
+option(HOTCART_TEST_COVERAGE_GCOV "Enable GCOV test coverage" ON)
 
 # from: https://discourse.nixos.org/t/get-clangd-to-find-standard-headers-in-nix-shell/11268/10
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
@@ -88,13 +87,8 @@ if (HOTCART_ENABLE_TESTS)
     ${doctest_SOURCE_DIR}
   )
 
-  if (HOTCART_TEST_COVERAGE_LLVM)
-    target_compile_options(hotcart-tests PRIVATE -g -O1 -fprofile-instr-generate -fcoverage-mapping)
-    target_link_options(hotcart-tests PRIVATE -fprofile-instr-generate)
-  endif()
-
   if (HOTCART_TEST_COVERAGE_GCOV)
-    target_compile_options(hotcart-tests PRIVATE -g -O1 --coverage)
+    target_compile_options(hotcart-tests PRIVATE -g -O1 --coverage -fprofile-abs-path)
     target_link_options(hotcart-tests PRIVATE --coverage)
   endif()
 
