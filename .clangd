@@ -1,2 +1,5 @@
 CompileFlags:
   Add: [-DBUILT_WITH_CLANGD]
+  Remove: [-fprofile-abs-path]
+Diagnostics:
+  Suppress: [unused-includes]
