@@ -9,7 +9,7 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -33,6 +33,6 @@ jobs:
         with:
           verbose: false
           file: build-gcov/coverage.info
-          fail_on_error: true
+          fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
