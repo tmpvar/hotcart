@@ -1,6 +1,6 @@
 name: C/C++ CI
 
-on: [push, pull_request]
+on: [push]
 jobs:
   build-ubuntu-latest:
     runs-on: ${{ matrix.os }}
@@ -33,7 +33,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         verbose: false
-        directory: build-gcov/coverage
+        file: build-gcov/coverage.info
         fail_on_error: true
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
