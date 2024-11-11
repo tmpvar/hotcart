@@ -56,7 +56,9 @@ HotcartParseLibPragmaGithub(const std::string &pragma) {
 
       case '@': {
         std::string value = pragma.substr(start, charIndex - start);
-        if (pathSegmentCount >= 2) {
+        if(pathSegmentCount == 1) {
+          lib.repo = value;
+        } else if (pathSegmentCount >= 2) {
           lib.path += value;
         }
 
@@ -152,6 +154,17 @@ TEST_CASE("Parsing lib pragma: 'github:'") {
     CHECK(github.user == "user");
     CHECK(github.repo == "project");
     CHECK(github.path == "path/to/dir");
+    CHECK(github.sha == "sha");
+  }
+
+  // Github no path
+  {
+    HotcartPragmaLib lib = HotcartParseLibPragma("github:user/repo@sha");
+    const auto &github = std::get<HotcartPragmaLibGithub>(lib);
+    CHECK(github.user == "user");
+    CHECK(github.repo == "repo");
+    CHECK(github.path == "");
+    CHECK(github.sha == "sha");
   }
 
   // Github extra colon

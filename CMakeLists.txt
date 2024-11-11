@@ -29,7 +29,7 @@ FetchContent_Declare(
   simplecpp
   GIT_REPOSITORY https://github.com/tmpvar/simplecpp.git
   # the tmpvar/pragma-callback branch
-  GIT_TAG        2b3c8d5c0317de21c89027eb2057a14e9456d5d9
+  GIT_TAG        2ab0729e29509dba24920f88da35dde2f446a167
 )
 FetchContent_Populate(simplecpp)
 add_library(simplecpp STATIC ${simplecpp_SOURCE_DIR}/simplecpp.cpp)
