@@ -2,8 +2,8 @@
 
 DIR="$(dirname "$(realpath "$0")")"
 
-pushd "${DIR}/../build-tests" > /dev/null
-cmake --build . --parallel --target hotcart-tests
+pushd "${DIR}/../build" > /dev/null
+cmake --build . --parallel
 
 ./hotcart-tests
 
@@ -14,6 +14,7 @@ lcov -q --no-external -r coverage.info "*doctest*" --output-file coverage.info
 
 bash $DIR/print-coverage.sh coverage.info
 
+genhtml -q coverage.info --output-directory coverage
 echo "  html report: file://$(realpath coverage/index.html)"
 popd > /dev/null
 
