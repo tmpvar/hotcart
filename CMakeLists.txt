@@ -3,7 +3,9 @@ project(sdl-imwindow)
 
 include(FetchContent)
 
-option(HOTCART_ENABLE_TESTS "Enable tests" ON)
+option(HOTCART_ENABLE_TESTS "Enable tests" OFF)
+option(HOTCART_TEST_COVERAGE_LLVM "Enable LLVM test coverage" OFF)
+option(HOTCART_TEST_COVERAGE_GCOV "Enable GCOV test coverage" OFF)
 
 # from: https://discourse.nixos.org/t/get-clangd-to-find-standard-headers-in-nix-shell/11268/10
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
@@ -43,7 +45,13 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/docopt/docopt.cpp
   GIT_TAG        400e6dd8e59196c914dcc2c56caf7dae7efa5eb3
 )
-FetchContent_MakeAvailable(docopt)
+FetchContent_Populate(docopt)
+
+add_library(docopt STATIC ${docopt_SOURCE_DIR}/docopt.cpp)
+target_include_directories(docopt PUBLIC
+  ${simplecpp_SOURCE_DIR}
+)
+add_library(docopt::docopt ALIAS docopt)
 
 # EFSW
 FetchContent_Declare(
@@ -64,24 +72,35 @@ target_link_libraries(hotcart PRIVATE
 )
 
 if (HOTCART_ENABLE_TESTS)
+  enable_testing()
+
   # DocTest
   FetchContent_Declare(
     doctest
     GIT_REPOSITORY https://github.com/doctest/doctest
     GIT_TAG        ae7a13539fb71f270b87eb2e874fbac80bc8dda2
   )
-  FetchContent_MakeAvailable(doctest)
+  FetchContent_Populate(doctest)
 
   add_executable(hotcart-tests ${SRC}/tests.cpp)
-  target_include_directories(hotcart-tests PUBLIC ${SRC}/include)
+  target_include_directories(hotcart-tests PUBLIC
+    ${SRC}/include
+    ${doctest_SOURCE_DIR}
+  )
 
-  target_compile_options(hotcart-tests PRIVATE -fprofile-instr-generate -fcoverage-mapping)
-  target_link_options(hotcart-tests PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+  if (HOTCART_TEST_COVERAGE_LLVM)
+    target_compile_options(hotcart-tests PRIVATE -g -O1 -fprofile-instr-generate -fcoverage-mapping)
+    target_link_options(hotcart-tests PRIVATE -fprofile-instr-generate)
+  endif()
+
+  if (HOTCART_TEST_COVERAGE_GCOV)
+    target_compile_options(hotcart-tests PRIVATE -g -O1 --coverage)
+    target_link_options(hotcart-tests PRIVATE --coverage)
+  endif()
 
   target_link_libraries(hotcart-tests PRIVATE
     spdlog
     simplecpp::simplecpp
-    docopt
-    doctest
+    docopt::docopt
   )
 endif()

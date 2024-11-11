@@ -1,0 +1,38 @@
+name: C/C++ CI
+
+on: [push]
+jobs:
+  build-ubuntu-latest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install -y build-essential cmake lcov
+
+      - name: Build
+        run: |
+          cmake -B build-gcov -S . -DCMAKE_BUILD_TYPE=Debug -DHOTCART_ENABLE_TESTS=1 -DHOTCART_TEST_COVERAGE_GCOV=1
+          cmake --build build-gcov --config Debug --target hotcart-tests --parallel
+
+      - name: Run Tests
+        run: |
+          build-gcov/hotcart-tests
+
+      - name: Generate coverage.info
+        run: |
+          lcov --capture --directory . --output-file build-gcov/coverage.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          verbose: false
+          file: build-gcov/coverage.info
+          fail_on_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
