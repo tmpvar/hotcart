@@ -9,32 +9,30 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt install -y build-essential cmake lcov
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install -y build-essential cmake lcov
 
-    - name: build
-      run : |
-        cmake -B build-gcov -S . -DCMAKE_BUILD_TYPE=Debug -DHOTCART_ENABLE_TESTS=1 -DHOTCART_TEST_COVERAGE_GCOV=1
-        cmake --build build-gcov --config Debug --target hotcart-tests --parallel
+      - name: Build
+        run: |
+          cmake -B build-gcov -S . -DCMAKE_BUILD_TYPE=Debug -DHOTCART_ENABLE_TESTS=1 -DHOTCART_TEST_COVERAGE_GCOV=1
+          cmake --build build-gcov --config Debug --target hotcart-tests --parallel
 
-    - name: test
-      run: |
-        build-gcov/hotcart-tests
-    - name: coverage
-      run: |
-        lcov --capture --directory . --output-file build-gcov/coverage.info
-        cat build-gcov/coverage.info
-    # lcov ../CMakeFiles/hotcart-tests.dir/src/tests.cpp.gcda
+      - name: Run Tests
+        run: |
+          build-gcov/hotcart-tests
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        verbose: false
-        file: build-gcov/coverage.info
-        fail_on_error: true
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Generate coverage.info
+        run: |
+          lcov --capture --directory . --output-file build-gcov/coverage.info
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          verbose: false
+          file: build-gcov/coverage.info
+          fail_on_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
