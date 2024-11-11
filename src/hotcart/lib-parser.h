@@ -81,7 +81,7 @@ HotcartParseLibPragmaVCPKG(const std::string &pragma) {
     return HotcartPragmaLibInvalid{"No version in vcpkg pragma"};
   }
 
-  if (loc == 0){
+  if (loc == 0) {
     return HotcartPragmaLibInvalid{"No package in vcpkg pragma"};
   }
 
@@ -111,7 +111,8 @@ HotcartParseLibPragma(const std::string &pragma) {
         if (type == "vcpkg") {
           return HotcartParseLibPragmaVCPKG(pragma.substr(charIndex + 1));
         }
-        return HotcartPragmaLibInvalid{fmt::format("Unknown lib pragma source '{}'", type)};
+        return HotcartPragmaLibInvalid{
+          fmt::format("Unknown lib pragma source '{}'", type)};
       }
     }
   }
@@ -122,6 +123,7 @@ HotcartParseLibPragma(const std::string &pragma) {
 #if defined(HOTCART_TEST) || defined(BUILT_WITH_CLANGD)
   #include <doctest/doctest.h>
 
+// LCOV_EXCL_START
 TEST_CASE("Parsing lib pragma: invalid") {
   // Empty
   {
@@ -171,23 +173,21 @@ TEST_CASE("Parsing lib pragma: 'vcpkg:'") {
 
   // VCPKG extra colon
   {
-    HotcartPragmaLib lib = HotcartParseLibPragma(
-      "vcpkg:vcpkg:package@version");
+    HotcartPragmaLib lib = HotcartParseLibPragma("vcpkg:vcpkg:package@version");
     CHECK(std::holds_alternative<HotcartPragmaLibInvalid>(lib));
   }
 
   // VCPKG no package
   {
-    HotcartPragmaLib lib = HotcartParseLibPragma(
-      "vcpkg:@version");
+    HotcartPragmaLib lib = HotcartParseLibPragma("vcpkg:@version");
     CHECK(std::holds_alternative<HotcartPragmaLibInvalid>(lib));
   }
 
   // VCPKG no version
   {
-    HotcartPragmaLib lib = HotcartParseLibPragma(
-      "vcpkg:package");
+    HotcartPragmaLib lib = HotcartParseLibPragma("vcpkg:package");
     CHECK(std::holds_alternative<HotcartPragmaLibInvalid>(lib));
   }
 }
+// LCOV_EXCL_STOP
 #endif
