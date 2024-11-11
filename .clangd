@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-DBUILT_WITH_CLANGD]

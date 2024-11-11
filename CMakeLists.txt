@@ -3,7 +3,7 @@ project(sdl-imwindow)
 
 include(FetchContent)
 
-option(HOTCART_ENABLE_TESTS "Enable tests" OFF)
+option(HOTCART_ENABLE_TESTS "Enable tests" ON)
 option(HOTCART_TEST_COVERAGE_GCOV "Enable GCOV test coverage" ON)
 
 # from: https://discourse.nixos.org/t/get-clangd-to-find-standard-headers-in-nix-shell/11268/10
@@ -60,9 +60,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(efsw)
 
-## Executables
-add_executable(hotcart ${SRC}/hotcart.cpp)
-target_include_directories(hotcart PUBLIC ${SRC}/include)
+# Executables
+add_executable(hotcart
+ ${SRC}/hotcart/cli.cpp
+)
+target_include_directories(hotcart PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 target_link_libraries(hotcart PRIVATE
   spdlog
   simplecpp::simplecpp
@@ -71,21 +73,12 @@ target_link_libraries(hotcart PRIVATE
 )
 
 if (HOTCART_ENABLE_TESTS)
-  enable_testing()
-
-  # DocTest
-  FetchContent_Declare(
-    doctest
-    GIT_REPOSITORY https://github.com/doctest/doctest
-    GIT_TAG        ae7a13539fb71f270b87eb2e874fbac80bc8dda2
-  )
-  FetchContent_Populate(doctest)
-
   add_executable(hotcart-tests ${SRC}/tests.cpp)
   target_include_directories(hotcart-tests PUBLIC
-    ${SRC}/include
-    ${doctest_SOURCE_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/include
   )
+
+  target_compile_definitions(hotcart-tests PRIVATE -DHOTCART_TEST)
 
   if (HOTCART_TEST_COVERAGE_GCOV)
     target_compile_options(hotcart-tests PRIVATE -g -O1 --coverage -fprofile-abs-path)

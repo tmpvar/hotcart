@@ -33,7 +33,7 @@ cat $lcov_file | while read -r line; do
 
   end_record=$(echo $line | grep -E "^end_of_record")
   if [[ -n "$end_record" ]]; then
-    percent=$(python -c "print(float($lines_hit) / float($lines_found) * 100.0)")
+    percent=$(python -c "print('{:.2f}'.format(float($lines_hit) / float($lines_found) * 100.0))")
 
     echo "  $(realpath --relative-to="$DIR/.." $current_file) $percent%"
   fi

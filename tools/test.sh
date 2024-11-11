@@ -1,5 +1,5 @@
 #/usr/bin/env bash
-
+set -e
 DIR="$(dirname "$(realpath "$0")")"
 
 pushd "${DIR}/../build" > /dev/null
@@ -11,6 +11,7 @@ lcov --capture -q --directory CMakeFiles/hotcart-tests.dir --output-file coverag
 lcov -q --no-external -r coverage.info "/nix/store/*" --output-file coverage.info
 lcov -q --no-external -r coverage.info "/usr/include/*" --output-file coverage.info
 lcov -q --no-external -r coverage.info "*doctest*" --output-file coverage.info
+lcov -q --no-external -r coverage.info "*_deps*" --output-file coverage.info
 
 bash $DIR/print-coverage.sh coverage.info
 
