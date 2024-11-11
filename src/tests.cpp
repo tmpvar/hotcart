@@ -3,10 +3,6 @@
 
 int factorial(int number) { return number <= 1 ? number : factorial(number - 1) * number; }
 
-int add(int a, int b) {
-  return a + b;
-}
-
 TEST_CASE("testing the factorial function") {
   CHECK(factorial(1) == 1);
   CHECK(factorial(2) == 2);
