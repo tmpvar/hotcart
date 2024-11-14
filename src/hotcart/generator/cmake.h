@@ -22,7 +22,7 @@ GenerateCartridgeCMakeLists(const std::vector<RequestedLibGithub> &libs,
     FetchContent = "FetchContent_Declare(\n"
                    "  {user}-{repo}\n"
                    "  GIT_REPOSITORY https://github.com/{user}/{repoAndPath}\n"
-                   "  GIT_TAG {sha}\n"
+                   "  GIT_TAG {ref}\n"
                    "  GIT_SUBMODULES_RECURSE true\n"
                    "  GIT_SHALLOW true\n"
                    "  GIT_PROGRESS true\n"
@@ -39,7 +39,7 @@ GenerateCartridgeCMakeLists(const std::vector<RequestedLibGithub> &libs,
                                   fmt::arg("user", lib.user),
                                   fmt::arg("repo", lib.repo),
                                   fmt::arg("repoAndPath", repoAndPath),
-                                  fmt::arg("sha", lib.ref));
+                                  fmt::arg("ref", lib.ref));
     cmakeLists += tmp;
   }
 
