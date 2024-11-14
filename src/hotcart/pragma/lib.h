@@ -4,16 +4,13 @@
 
 #include <spdlog/spdlog.h>
 
+#include "../common.h"
+
 struct HotcartPragmaLibInvalid {
   std::string message;
 };
 
-struct HotcartPragmaLibGithub {
-  std::string user;
-  std::string repo;
-  std::string path;
-  std::string sha;
-};
+typedef RequestedLibGithub HotcartPragmaLibGithub;
 
 struct HotcartPragmaLibVCPKG {
   std::string package;
