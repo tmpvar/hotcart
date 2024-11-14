@@ -27,6 +27,10 @@ jobs:
       - name: Generate coverage.info
         run: |
           lcov --capture --directory . --output-file build-gcov/coverage.info
+          lcov -q --no-external -r build-gcov/coverage.info "/nix/store/*" --output-file build-gcov/coverage.info
+          lcov -q --no-external -r build-gcov/coverage.info "/usr/include/*" --output-file build-gcov/coverage.info
+          lcov -q --no-external -r build-gcov/coverage.info "*doctest*" --output-file build-gcov/coverage.info
+          lcov -q --no-external -r build-gcov/coverage.info "*_deps*" --output-file build-gcov/coverage.info
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

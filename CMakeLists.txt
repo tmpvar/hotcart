@@ -3,9 +3,8 @@ project(sdl-imwindow)
 
 include(FetchContent)
 
-option(HOTCART_ENABLE_TESTS "Enable tests" OFF)
-option(HOTCART_TEST_COVERAGE_LLVM "Enable LLVM test coverage" OFF)
-option(HOTCART_TEST_COVERAGE_GCOV "Enable GCOV test coverage" OFF)
+option(HOTCART_ENABLE_TESTS "Enable tests" ON)
+option(HOTCART_TEST_COVERAGE_GCOV "Enable GCOV test coverage" ON)
 
 # from: https://discourse.nixos.org/t/get-clangd-to-find-standard-headers-in-nix-shell/11268/10
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
@@ -30,7 +29,7 @@ FetchContent_Declare(
   simplecpp
   GIT_REPOSITORY https://github.com/tmpvar/simplecpp.git
   # the tmpvar/pragma-callback branch
-  GIT_TAG        2b3c8d5c0317de21c89027eb2057a14e9456d5d9
+  GIT_TAG        2ab0729e29509dba24920f88da35dde2f446a167
 )
 FetchContent_Populate(simplecpp)
 add_library(simplecpp STATIC ${simplecpp_SOURCE_DIR}/simplecpp.cpp)
@@ -61,9 +60,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(efsw)
 
-## Executables
-add_executable(hotcart ${SRC}/hotcart.cpp)
-target_include_directories(hotcart PUBLIC ${SRC}/include)
+# Executables
+add_executable(hotcart
+ ${SRC}/hotcart/cli.cpp
+)
+target_include_directories(hotcart PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 target_link_libraries(hotcart PRIVATE
   spdlog
   simplecpp::simplecpp
@@ -72,29 +73,15 @@ target_link_libraries(hotcart PRIVATE
 )
 
 if (HOTCART_ENABLE_TESTS)
-  enable_testing()
-
-  # DocTest
-  FetchContent_Declare(
-    doctest
-    GIT_REPOSITORY https://github.com/doctest/doctest
-    GIT_TAG        ae7a13539fb71f270b87eb2e874fbac80bc8dda2
-  )
-  FetchContent_Populate(doctest)
-
   add_executable(hotcart-tests ${SRC}/tests.cpp)
   target_include_directories(hotcart-tests PUBLIC
-    ${SRC}/include
-    ${doctest_SOURCE_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/include
   )
 
-  if (HOTCART_TEST_COVERAGE_LLVM)
-    target_compile_options(hotcart-tests PRIVATE -g -O1 -fprofile-instr-generate -fcoverage-mapping)
-    target_link_options(hotcart-tests PRIVATE -fprofile-instr-generate)
-  endif()
+  target_compile_definitions(hotcart-tests PRIVATE -DHOTCART_TEST)
 
   if (HOTCART_TEST_COVERAGE_GCOV)
-    target_compile_options(hotcart-tests PRIVATE -g -O1 --coverage)
+    target_compile_options(hotcart-tests PRIVATE -g -O1 --coverage -fprofile-abs-path)
     target_link_options(hotcart-tests PRIVATE --coverage)
   endif()
 
