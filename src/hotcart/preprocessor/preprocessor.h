@@ -123,14 +123,14 @@ TEST_CASE("Preprocessor: valid") {
   CHECK(github1.user == "user");
   CHECK(github1.repo == "repo");
   CHECK(github1.path == "");
-  CHECK(github1.sha == "sha");
+  CHECK(github1.ref == "sha");
 
   HotcartPragmaLibGithub github2 = std::get<HotcartPragmaLibGithub>(
     result.requestedLibs[1]);
   CHECK(github2.user == "user2");
   CHECK(github2.repo == "cool-repo");
   CHECK(github2.path == "path/to/thing");
-  CHECK(github2.sha == "v1.2.3");
+  CHECK(github2.ref == "v1.2.3");
 
   HotcartPragmaLibVCPKG vcpkg = std::get<HotcartPragmaLibVCPKG>(result.requestedLibs[2]);
   CHECK(vcpkg.package == "package");

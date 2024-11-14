@@ -6,5 +6,5 @@ struct RequestedLibGithub {
   std::string user;
   std::string repo;
   std::string path;
-  std::string sha;
+  std::string ref;
 };

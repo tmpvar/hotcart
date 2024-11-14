@@ -60,7 +60,7 @@ HotcartParseLibPragmaGithub(const std::string &pragma) {
         }
 
         std::string sha = pragma.substr(charIndex + 1, pragma.length() - charIndex - 1);
-        lib.sha = sha;
+        lib.ref = sha;
         break;
       }
     }
@@ -151,7 +151,7 @@ TEST_CASE("Parsing lib pragma: 'github:'") {
     CHECK(github.user == "user");
     CHECK(github.repo == "project");
     CHECK(github.path == "path/to/dir");
-    CHECK(github.sha == "sha");
+    CHECK(github.ref == "sha");
   }
 
   // Github no path
@@ -161,7 +161,7 @@ TEST_CASE("Parsing lib pragma: 'github:'") {
     CHECK(github.user == "user");
     CHECK(github.repo == "repo");
     CHECK(github.path == "");
-    CHECK(github.sha == "sha");
+    CHECK(github.ref == "sha");
   }
 
   // Github extra colon

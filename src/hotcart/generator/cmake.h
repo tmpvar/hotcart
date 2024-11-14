@@ -39,7 +39,7 @@ GenerateCartridgeCMakeLists(const std::vector<RequestedLibGithub> &libs,
                                   fmt::arg("user", lib.user),
                                   fmt::arg("repo", lib.repo),
                                   fmt::arg("repoAndPath", repoAndPath),
-                                  fmt::arg("sha", lib.sha));
+                                  fmt::arg("sha", lib.ref));
     cmakeLists += tmp;
   }
 
@@ -75,7 +75,7 @@ TEST_CASE("CMake: generate cartridge CMakelists") {
   // With libs
   {
     const std::vector<RequestedLibGithub> libs = {
-      {.user = "user", .repo = "repo", .path = "path/to/dir", .sha = "sha"},
+      {.user = "user", .repo = "repo", .path = "path/to/dir", .ref = "sha"},
     };
     const std::string result = GenerateCartridgeCMakeLists(libs, "source.cpp");
 
